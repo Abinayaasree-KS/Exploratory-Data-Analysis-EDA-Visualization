@@ -118,7 +118,7 @@ def render_overview(processor, filtered_df):
     st.plotly_chart(fig, use_container_width=True)
     
     # Key insights
-    st.markdown("### 💡 Key Insights")
+    st.markdown("### Key Insights")
     st.markdown("""
     <div class="insight-box">
     <b>Finding 1:</b> Countries with higher collaboration indices tend to have better citation rates, 
