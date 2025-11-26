@@ -661,7 +661,7 @@ body {
   :root {
     --light-bg: #1a1a1a;
     --text-dark: #e0e0e0;
-    --text-muted: #a0a0a0;
+    --text-muted: #0e0e0e;
   }
   
   .card-container,
