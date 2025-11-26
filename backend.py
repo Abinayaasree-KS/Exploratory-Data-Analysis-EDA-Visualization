@@ -148,8 +148,8 @@ class PublicationDataProcessor:
                        df: pd.DataFrame, 
                        metric: str = 'Times Cited', 
                        threshold: float = 2.0) -> pd.DataFrame:
-        """Detect statistical outliers using Z-score (SciPy-free)"""
-        z_scores = np.abs(zscore_numpy(df[metric]))
+        """Detect statistical outliers using Z-score"""
+        z_scores = np.abs(stats.zscore(df[metric]))
         outlier_df = df.copy()
         outlier_df['Z_Score'] = z_scores
         return outlier_df[z_scores > threshold][
