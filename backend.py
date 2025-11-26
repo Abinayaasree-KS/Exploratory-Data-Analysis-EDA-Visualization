@@ -5,10 +5,17 @@ Handles data loading, processing, and statistical computations
 
 import pandas as pd
 import numpy as np
-from scipy import stats
 from typing import Dict, List, Tuple, Optional
 import warnings
 warnings.filterwarnings('ignore')
+
+
+# -------------------------------
+# Custom replacement for SciPy zscore
+# -------------------------------
+def zscore_numpy(series: pd.Series) -> np.ndarray:
+    """Compute z-score using pure NumPy (SciPy-free)."""
+    return (series - series.mean()) / series.std(ddof=0)
 
 
 class PublicationDataProcessor:
@@ -141,8 +148,8 @@ class PublicationDataProcessor:
                        df: pd.DataFrame, 
                        metric: str = 'Times Cited', 
                        threshold: float = 2.0) -> pd.DataFrame:
-        """Detect statistical outliers using Z-score"""
-        z_scores = np.abs(stats.zscore(df[metric]))
+        """Detect statistical outliers using Z-score (SciPy-free)"""
+        z_scores = np.abs(zscore_numpy(df[metric]))
         outlier_df = df.copy()
         outlier_df['Z_Score'] = z_scores
         return outlier_df[z_scores > threshold][
