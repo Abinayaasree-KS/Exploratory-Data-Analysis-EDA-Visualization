@@ -27,16 +27,18 @@ def load_css(css_file):
         css_file (str): Path to the CSS file
     """
     try:
+        # Check if file exists
         if not os.path.exists(css_file):
             st.warning(f"CSS file '{css_file}' not found. Using default styling.")
             return
         
+        # Read and inject CSS
         with open(css_file, 'r', encoding='utf-8') as f:
             css_content = f.read()
             st.markdown(f'<style>{css_content}</style>', unsafe_allow_html=True)
             
     except Exception as e:
-        st.error(f"❌ Error loading CSS file: {str(e)}")
+        st.error(f"Error loading CSS file: {str(e)}")
 
 
 # Load custom styles from external CSS file
@@ -85,7 +87,7 @@ def render_overview(processor, filtered_df):
             color_continuous_scale='Blues'
         )
         fig.update_layout(showlegend=False, height=400)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     with col2:
         st.subheader("Top 10 Countries by Publications")
@@ -99,10 +101,10 @@ def render_overview(processor, filtered_df):
             color_continuous_scale='Greens'
         )
         fig.update_layout(showlegend=False, height=400)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     # Citation efficiency
-    st.subheader("⚡ Citation Efficiency Analysis")
+    st.subheader("Citation Efficiency Analysis")
     top_efficiency = processor.calculate_citation_efficiency(filtered_df)
     
     fig = px.scatter(
@@ -115,7 +117,7 @@ def render_overview(processor, filtered_df):
         title="Top 15 Countries by Citation Efficiency (Citations per Document)"
     )
     fig.update_layout(height=500)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
     
     # Key insights
     st.markdown("### Key Insights")
@@ -182,7 +184,7 @@ def render_country_analysis(processor):
     fig.update_yaxes(title_text="Citations", row=2, col=1)
     fig.update_layout(height=600, showlegend=True)
     
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
     
     # Collaboration analysis
     st.subheader(f"{country}'s Collaboration Profile")
@@ -210,7 +212,7 @@ def render_country_analysis(processor):
             }
         ))
         fig.update_layout(height=300)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     with col2:
         doc_categories = country_data[
@@ -222,7 +224,7 @@ def render_country_analysis(processor):
             marker_color=['gold', 'silver']
         )])
         fig.update_layout(title="Document Quality Distribution (%)", height=300)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     # Comparison with global average
     st.subheader(f"{country} vs Global Average")
@@ -242,7 +244,7 @@ def render_country_analysis(processor):
         y=comparison_df['Global Average']
     ))
     fig.update_layout(barmode='group', height=400)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
 
 def render_temporal_trends(processor, filtered_df):
@@ -299,7 +301,7 @@ def render_temporal_trends(processor, filtered_df):
     
     fig.update_xaxes(title_text="Year", row=3, col=1)
     fig.update_layout(height=900, showlegend=False)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
     
     # Growth rate analysis
     st.subheader("Year-over-Year Growth Rates")
@@ -322,7 +324,7 @@ def render_temporal_trends(processor, filtered_df):
         height=400, 
         title="Year-over-Year Growth Rates (%)"
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
     
     # Heatmap
     st.subheader("Publication Heatmap: Countries vs Years")
@@ -336,7 +338,7 @@ def render_temporal_trends(processor, filtered_df):
         color_continuous_scale="YlOrRd"
     )
     fig.update_layout(height=600)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
 
 def render_collaboration_patterns(processor, filtered_df):
@@ -360,10 +362,10 @@ def render_collaboration_patterns(processor, filtered_df):
         line_color="red", 
         annotation_text="Mean"
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
     
-    # Correlation - REMOVED TRENDLINE
-    st.subheader("🔗 Collaboration Impact on Citations")
+    # Correlation
+    st.subheader("Collaboration Impact on Citations")
     
     fig = px.scatter(
         filtered_df,
@@ -372,10 +374,11 @@ def render_collaboration_patterns(processor, filtered_df):
         size='Web of Science Documents',
         color='Name',
         hover_data=['Name', 'year'],
-        title="Collaboration Index vs Citations (bubble size = publications)"
+        title="Collaboration Index vs Citations (bubble size = publications)",
+        trendline="ols"
     )
     fig.update_layout(height=600)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
     
     correlation = processor.calculate_collaboration_correlation(filtered_df)
     st.markdown(f"**Correlation coefficient:** {correlation:.3f}")
@@ -398,7 +401,7 @@ def render_collaboration_patterns(processor, filtered_df):
     )
     fig.update_traces(textposition='top center')
     fig.update_layout(height=600)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
     
     # Regional patterns
     st.subheader("Collaboration Patterns by Region")
@@ -419,7 +422,7 @@ def render_collaboration_patterns(processor, filtered_df):
             color_continuous_scale='Viridis'
         )
         fig.update_layout(showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     
     with col2:
         avg_docs_cited = filtered_df.groupby('Name')['% Docs Cited'].mean().sort_values(
@@ -435,7 +438,7 @@ def render_collaboration_patterns(processor, filtered_df):
             color_continuous_scale='Plasma'
         )
         fig.update_layout(showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
 
 def render_advanced_insights(processor, filtered_df):
@@ -459,7 +462,7 @@ def render_advanced_insights(processor, filtered_df):
         title="Feature Correlation Matrix"
     )
     fig.update_layout(height=600)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
     
     # Outlier detection
     st.subheader("Outlier Analysis")
@@ -493,10 +496,10 @@ def render_advanced_insights(processor, filtered_df):
         line_color="gray"
     )
     fig.update_layout(height=600)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
     
     # Predictive insights
-    st.subheader("🔮 Predictive Insights")
+    st.subheader("Predictive Insights")
     st.markdown("""
     <div class="insight-box">
     <b>Key Findings:</b><br>
@@ -524,7 +527,7 @@ def render_advanced_insights(processor, filtered_df):
         xaxis_title="Rank (lower is better)",
         height=500
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
     
     # Data export
     st.subheader("Export Filtered Data")
@@ -576,7 +579,7 @@ def main():
         
         # Navigation
         view = st.sidebar.radio(
-            "📍 Navigate", 
+            "Navigate", 
             ["Overview", "Country Analysis", "Temporal Trends", 
              "Collaboration Patterns", "Advanced Insights"]
         )
@@ -594,10 +597,10 @@ def main():
             render_advanced_insights(processor, filtered_df)
             
     except FileNotFoundError:
-        st.error("❌ Error: 'publications.csv' file not found. Please ensure the file is in the same directory as this script.")
+        st.error("Error: 'publications.csv' file not found. Please ensure the file is in the same directory as this script.")
         st.info("💡 Place your 'publications.csv' file in the same folder as this script and refresh the page.")
     except Exception as e:
-        st.error(f"❌ An error occurred: {str(e)}")
+        st.error(f"An error occurred: {str(e)}")
         st.info("Please check your data file format and try again.")
 
 
